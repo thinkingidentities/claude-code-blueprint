@@ -63,7 +63,7 @@ This is a curated subset, not a mirror of a production setup. The full system ha
 
 ```bash
 # 1. Clone
-git clone https://github.com/YOUR_USERNAME/claude-code-blueprint.git
+git clone https://github.com/Aedelon/claude-code-blueprint.git
 cd claude-code-blueprint
 
 # 2. Copy to your Claude Code config
