@@ -113,6 +113,8 @@ This prevents the model's natural tendency to jump directly to Phase 4 (writing 
 
 ## Fail-Closed Pattern
 
+Claude Code exposes **17 lifecycle events** for hooks (command, HTTP, or prompt). This blueprint uses command hooks on 9 of them. See the README for the full list.
+
 All PreToolUse hooks use the same safety pattern:
 
 ```bash

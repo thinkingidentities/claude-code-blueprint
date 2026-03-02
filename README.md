@@ -15,7 +15,7 @@ A production-grade Claude Code configuration: skills, agents, hooks, rules, and 
 |         huggingface, jupyter, ide)                |
 +---------------------------------------------------+
 |              LAYER 5: SECURITY                    |
-|     40 allow + 38 deny + 17 hooks lifecycle       |
+|     40 allow + 38 deny + hooks (17 events)        |
 |     + regex secrets + fail-closed trap            |
 +---------------------------------------------------+
 |              LAYER 4: AGENTS                      |
@@ -205,7 +205,14 @@ Your agent's personality, methodology, and domain knowledge.
 2. Make it executable: `chmod +x your-hook.sh`
 3. Register it in `~/.claude/settings.json` under the appropriate lifecycle event
 
-Key patterns:
+Claude Code supports **17 lifecycle events**: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PermissionRequest`, `PostToolUse`, `PostToolUseFailure`, `Notification`, `SubagentStart`, `SubagentStop`, `Stop`, `TeammateIdle`, `TaskCompleted`, `ConfigChange`, `WorktreeCreate`, `WorktreeRemove`, `PreCompact`, `SessionEnd`. This blueprint covers 9 of them.
+
+Hooks support three types:
+- **`"type": "command"`** — a shell script (used in this blueprint)
+- **`"type": "http"`** — POST JSON to a URL, receive JSON back
+- **`"type": "prompt"`** — an LLM sub-agent interprets the event
+
+Key patterns for command hooks:
 - Always start with `set -euo pipefail`
 - Use `trap ... ERR` for fail-closed behavior on PreToolUse hooks
 - Read JSON from stdin: `input=$(cat)`
