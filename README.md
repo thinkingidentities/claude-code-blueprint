@@ -248,9 +248,3 @@ The article explains the categories. This repo gives you the skeleton.
 ## License
 
 Apache 2.0 -- Delanoe Pirard / Aedelon
-
----
-
-## Credits
-
-Built with Claude Code. The system described is the system used.
