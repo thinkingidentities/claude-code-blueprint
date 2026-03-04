@@ -1,11 +1,16 @@
 ---
 name: brainstorm
 description: |-
-  Multi-agent brainstorming on complex topics. Explores the subject with the user,
+  Multi-agent brainstorming and strategic thinking on any complex topic. Explores the subject deeply,
   then spawns specialized sub-agents in parallel for diverse expert perspectives.
-  MUST BE USED when user asks: "brainstorm", "explore ideas", "what are the options",
-  "how should I approach", "pros and cons", "compare approaches", "what do you think about".
-  Combines structured dialogue with parallel expert analysis.
+  MUST BE USED PROACTIVELY when user faces any decision, architectural choice, design question,
+  strategic dilemma, or open-ended problem that benefits from multiple viewpoints.
+  Triggers: "brainstorm", "explore ideas", "what are the options", "how should I approach",
+  "pros and cons", "compare approaches", "what do you think about", "best way to",
+  "should I use X or Y", "what's the best approach", "help me decide", "trade-offs",
+  "alternatives", "strategy for", "how would you", "what's your take", "opinions on",
+  "which one", "recommend", "suggest", "ideas for", "possibilities", "ways to",
+  "what direction", "where to start", "what's better".
 allowed-tools:
   - Agent
   - AskUserQuestion

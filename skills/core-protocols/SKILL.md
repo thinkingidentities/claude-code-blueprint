@@ -3,8 +3,11 @@ name: core-protocols
 description: |-
   Debug errors systematically by searching first, then analyzing, then proposing verified solutions.
   MUST BE USED when user reports: "error", "bug", "doesn't work", "fails", "crash", stack traces,
-  exception messages, or any troubleshooting scenario. Also enforces confidence levels and output templates.
-  Prevents guessing solutions without research.
+  exception messages, or any troubleshooting scenario.
+  Triggers: "TypeError", "ImportError", "undefined is not a function", "segfault", "panic",
+  "broken", "not working", "unexpected behavior", "regression", "failing", "exception",
+  "traceback", "stack trace", "debug this", "why does this fail", "help me fix".
+  Also enforces confidence levels and output templates. Prevents guessing solutions without research.
 allowed-tools:
   - WebSearch
   - WebFetch

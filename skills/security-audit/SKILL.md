@@ -5,12 +5,13 @@ description: |-
   input validation, auth patterns, and secure defaults.
   MUST BE USED when user mentions: "security", "vulnerability", "audit", "OWASP", "CVE",
   "security review", "pentest", "injection", "XSS", "CSRF", "authentication",
-  "authorization", "secrets", "hardcoded password", "secure", "securite", "faille",
-  "vulnerabilite", "mot de passe en dur", "verifie la secu", "audit de securite",
-  "npm audit", "pip-audit", "scan de securite", "check security", "is this secure",
-  "est-ce que c'est securise", "risque de securite", "security risk", "data leak".
+  "authorization", "secrets", "hardcoded password", "secure", "npm audit", "pip-audit",
+  "check security", "is this secure", "security risk", "data leak", "SQL injection",
+  "command injection", "path traversal", "SSRF", "RCE", "privilege escalation",
+  "supply chain", "dependency scan", "snyk", "trivy", "semgrep", "bandit".
   Scans code for vulnerabilities, checks dependencies, verifies auth patterns.
-  NOT for explaining security concepts (use pedagogical-explain).
+  NOT for explaining security concepts (use pedagogical-explain),
+  or general code review (use code-review).
 allowed-tools:
   - Read
   - Grep

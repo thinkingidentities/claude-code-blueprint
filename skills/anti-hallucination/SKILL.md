@@ -1,10 +1,17 @@
 ---
 name: anti-hallucination
 description: |-
-  Verify API signatures, library methods, and factual claims before answering using Context7 and WebSearch.
-  MUST BE USED when user asks about: function parameters, method signatures, library versions, API behavior,
-  "how does X work", "what are the arguments for", or any technical claim requiring accuracy.
-  Prevents hallucinated code, wrong function names, and fabricated documentation.
+  CRITICAL SAFETY SKILL — Verify ALL technical claims, API signatures, library methods, code behavior,
+  and factual statements before answering. Use Context7, WebSearch, and Read tools to confirm.
+  MUST BE USED PROACTIVELY whenever: writing code that calls any library or API, answering technical questions,
+  stating facts about frameworks or tools, mentioning version numbers, describing function behavior,
+  recommending libraries, comparing technologies, or making any claim that could be wrong.
+  Triggers: "how does X work", "what are the arguments for", "does this function exist",
+  "is this the right syntax", "what version", "API reference", "documentation for",
+  "how to use", "method signature", "return type", "parameters", "correct usage",
+  "does this library support", "what's the default", "is this deprecated".
+  Prevents hallucinated code, wrong function names, fabricated documentation, and incorrect facts.
+  When in doubt about ANY technical claim, this skill MUST activate.
 allowed-tools:
   - mcp__context7__resolve-library-id
   - mcp__context7__get-library-docs

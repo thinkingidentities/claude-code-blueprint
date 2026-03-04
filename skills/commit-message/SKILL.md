@@ -3,8 +3,11 @@ name: commit-message
 description: |-
   Ship workflow: review changes, generate conventional commit messages, push, and create PRs.
   MUST BE USED when user says: "commit", "git commit", "commit this", "save changes", "commit message",
-  "ship", "ship it", "push", "create PR", "pull request", "c'est pret", "on merge", "deploie",
+  "ship", "ship it", "push", "create PR", "pull request", "ready to merge", "deploy this",
+  "stage changes", "what changed", "review my changes", "conventional commit",
   or after completing a coding task. Reviews changes, generates commit, optionally pushes and creates PR.
+  NOT for git branching/rebasing (use git-workflow), code review (use review command),
+  or deployment configuration (use deployment-assistant).
 allowed-tools:
   - Bash
   - mcp__git__git_status

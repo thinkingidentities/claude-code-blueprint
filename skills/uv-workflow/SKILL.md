@@ -4,14 +4,13 @@ description: |-
   Master uv package manager for Python: project setup, dependency management, virtual environments,
   lockfiles, CI/CD integration, Docker builds, and migration from pip/poetry.
   MUST BE USED when user mentions: "uv", "uv add", "uv run", "uv sync", "uv init", "uv lock",
-  "uv venv", "uv pip", "pyproject.toml", "python project setup", "installer package python",
-  "gerer dependances", "virtual environment", "venv", "pip install", "poetry to uv",
-  "migrate from pip", "lockfile python", "python dependencies",
-  "creer projet python", "initialiser projet python", "nouveau projet python",
-  "requirements.txt", "setup.py", "pip freeze", "dependances python", "uv tool",
-  "ajouter un package", "installer une lib", "configurer l'environnement python",
-  "gestionnaire de paquets python", "environnement virtuel python".
+  "uv venv", "uv pip", "pyproject.toml", "python project setup", "python dependencies",
+  "virtual environment", "venv", "pip install", "poetry to uv", "migrate from pip",
+  "lockfile python", "requirements.txt", "setup.py", "pip freeze", "uv tool",
+  "install package", "add dependency", "python environment", "new python project",
+  "package manager python", "create project", "uv export", "uv cache", "uv python".
   10-100x faster than pip. Covers init, add, sync, lock, run, Docker, CI/CD.
+  NOT for npm/pnpm/yarn (JS toolchain), Rust cargo, or deployment (use deployment-assistant).
 allowed-tools:
   - Bash
   - Read

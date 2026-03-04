@@ -3,8 +3,12 @@ name: research-protocol
 description: |-
   Conduct rigorous research with proper citations (DOI, arXiv, PMID) and source triangulation.
   MUST BE USED when user asks: "what is SOTA", "recent developments", "compare X vs Y",
-  "is it true that", "research says", "latest papers on", "scientific evidence", "studies show".
+  "is it true that", "research says", "latest papers on", "scientific evidence", "studies show",
+  "state of the art", "literature review", "find papers", "academic research",
+  "benchmark results", "who published", "when was X released", "current best",
+  "what does the research say", "evidence for", "peer reviewed".
   Searches multiple sources, evaluates reliability, states confidence level.
+  NOT for verifying API signatures (use anti-hallucination) or general web search (use WebSearch directly).
 allowed-tools:
   - WebSearch
   - WebFetch

@@ -4,8 +4,13 @@ description: |-
   Reference patterns for REST APIs, pytest/vitest testing, Docker multi-stage builds, GitHub Actions CI/CD,
   PostgreSQL, TypeScript generics, Python async, and React Server Components.
   MUST BE USED when user asks about: "API design", "how to test", "Dockerfile", "CI/CD pipeline",
-  "database schema", "TypeScript types", "async/await", "React hooks", "Next.js", "FastAPI".
+  "database schema", "TypeScript types", "async/await", "React hooks", "Next.js", "FastAPI",
+  "testing pattern", "mock", "fixture", "docker compose", "github actions", "workflow yaml",
+  "postgres query", "SQL pattern", "migration", "generic type", "server component",
+  "use client", "use server", "middleware pattern", "error handling pattern", "retry logic".
   Includes code examples and validation commands.
+  NOT for running tests (use smart-test-runner), security patterns (use security-audit),
+  or git operations (use commit-message).
 allowed-tools:
   - mcp__context7__resolve-library-id
   - mcp__context7__get-library-docs
