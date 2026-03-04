@@ -6,7 +6,7 @@
 
 A production-grade Claude Code configuration: skills, agents, hooks, rules, and permissions working as a system, not as isolated features.
 
-**Companion repo for the article**: *"I Turned Claude Code Into an Operating System. Here's the Blueprint."*
+**Companion repo for the article**: [*"I Turned Claude Code Into an Operating System. Here's the Blueprint."*](https://ai.gopubby.com/claude-code-setup-skills-hooks-agents-mcp-blueprint-80bdef0c62f6)
 
 ---
 
