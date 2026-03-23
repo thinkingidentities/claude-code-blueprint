@@ -1,69 +1,81 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Claude Code Hook: SessionStart
+# Claude Code Hook: SessionStart (TW-adapted)
 # =============================================================================
-# Injecte les informations du projet dans le contexte de Claude.
-# Input: JSON via stdin avec session_id, cwd, source, etc.
-# Output: JSON avec additionalContext
+# Injects project context into Claude session.
+# TW tuning: detects TW repo type, ThinkJob worktrees, cognate identity.
+# NOTE: This runs ALONGSIDE the External RAM hydration hook (ADR-005 protected).
+#       It does NOT replace external-ram-hydrate.sh.
 #
-# Copyright: Delanoe Pirard / Aedelon. Apache 2.0
+# Authority: SEED (see AUTHORITY-MATRIX.md)
+# Origin: Aedelon/claude-code-blueprint, adapted for TW by Code 🔧
 # =============================================================================
 
 set -euo pipefail
 
-# Lire stdin JSON (obligatoire pour Claude Code)
+# Read stdin JSON (required by Claude Code)
 input=$(cat)
 
-# Extraire le répertoire de travail depuis stdin ou utiliser le cwd actuel
+# Extract working directory from stdin or use cwd
 cwd=$(echo "$input" | jq -r '.cwd // empty' 2>/dev/null || pwd)
 cd "$cwd" 2>/dev/null || true
 
 # Build context message
-context="🚀 Session started $(date '+%Y-%m-%d %H:%M:%S')"
+context="Session started $(date '+%Y-%m-%d %H:%M:%S')"
 
-# Détection du type de projet
+# TW repo detection
+if [ -f CLAUDE.md ] && [ -f AGENTS.md ]; then
+    context="$context | TW federated repo"
+elif [ -f CLAUDE.md ]; then
+    context="$context | Claude Code project"
+fi
+
+# Standard project detection
 if [ -f package.json ]; then
     name=$(jq -r '.name // "project"' package.json 2>/dev/null || echo "project")
     if jq -e '.dependencies.next // .devDependencies.next' package.json >/dev/null 2>&1; then
-        context="$context | 📦 $name (Next.js)"
-    elif jq -e '.dependencies["react-native"] // .dependencies.expo' package.json >/dev/null 2>&1; then
-        context="$context | 📱 $name (React Native)"
+        context="$context | $name (Next.js)"
     else
-        context="$context | 📦 $name (Node.js)"
+        context="$context | $name (Node.js)"
     fi
 elif [ -f pyproject.toml ]; then
     name=$(grep '^name' pyproject.toml 2>/dev/null | head -1 | sed 's/.*"\([^"]*\)".*/\1/' || echo "project")
-    context="$context | 🐍 ${name:-project} (Python)"
+    context="$context | ${name:-project} (Python)"
 elif [ -f Cargo.toml ]; then
     name=$(grep '^name' Cargo.toml 2>/dev/null | head -1 | sed 's/.*"\([^"]*\)".*/\1/' || echo "project")
-    context="$context | 🦀 ${name:-project} (Rust)"
-elif [ -f go.mod ]; then
-    context="$context | 🐹 Go project"
+    context="$context | ${name:-project} (Rust)"
+elif [ -f deno.json ] || [ -f deno.jsonc ]; then
+    context="$context | Deno project"
 fi
 
-# Informations Git
+# Git info
 if git rev-parse --git-dir >/dev/null 2>&1; then
     branch=$(git branch --show-current 2>/dev/null || echo 'detached')
     changes=$(git status --short 2>/dev/null | wc -l | tr -d ' ')
+
+    # ThinkJob worktree detection
+    if echo "$cwd" | grep -qE 'twc-[0-9]+'; then
+        twc_id=$(echo "$cwd" | grep -oE 'twc-[0-9]+' | tail -1)
+        context="$context | ThinkJob: $twc_id"
+    fi
+
     if [ "$changes" -gt 0 ]; then
-        context="$context | 🌿 $branch ($changes uncommitted)"
+        context="$context | Branch: $branch ($changes uncommitted)"
     else
-        context="$context | 🌿 $branch"
+        context="$context | Branch: $branch (clean)"
     fi
 fi
 
-# Liste des commandes disponibles
-if [ -d "$HOME/.claude/commands" ]; then
-    cmds=$(ls "$HOME/.claude/commands/"*.md 2>/dev/null | xargs -I {} basename {} .md | sort | tr '\n' ' ' || echo "")
+# Available project commands
+project_cmd_dir="$cwd/.claude/commands"
+if [ -d "$project_cmd_dir" ]; then
+    cmds=$(find "$project_cmd_dir" -name "*.md" -maxdepth 2 2>/dev/null | xargs -I {} basename {} .md | sort | tr '\n' ' ' || echo "")
     if [ -n "$cmds" ]; then
-        context="$context | 📋 Commands: $cmds"
+        context="$context | Commands: $cmds"
     fi
 fi
 
-context="$context | 💡 Skills and agents available"
-
-# Output JSON valide
-# Escape special characters for JSON
+# Output JSON
 escaped_context=$(echo "$context" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | tr '\n' ' ')
 
 echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"$escaped_context\"}}"

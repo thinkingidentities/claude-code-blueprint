@@ -10,13 +10,15 @@ description: |-
   or deployment configuration (use deployment-assistant).
 allowed-tools:
   - Bash
-  - mcp__git__git_status
-  - mcp__git__git_diff_unstaged
   - Read
   - AskUserQuestion
 ---
 
 # Ship Workflow
+
+## Authority: SEED (see AUTHORITY-MATRIX.md)
+
+Adapted for TW conventional commits. Branch naming and commit format from CLAUDE.md are canonical.
 
 ## Overview
 
@@ -106,16 +108,25 @@ git log --oneline -5
 - Reference issues if applicable: `Closes #123`
 - Note breaking changes: `BREAKING CHANGE: ...`
 
+## TW Branch + Commit Convention
+
+```
+Branch: {type}/twc-NNN-description
+Commit: {type}: description [TWC-NNN]
+
+Types: feat | fix | chore | docs | refactor | perf | test | ci | build
+Never squash merge. Always use merge commits.
+Never commit directly to main.
+```
+
 ## Template
 
 ```
-<type>(<scope>): <description>
+<type>(<scope>): <description> [TWC-NNN]
 
 <optional body explaining why this change was made>
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Claude <model> <noreply@anthropic.com>
 ```
 
 ## Git Command Format

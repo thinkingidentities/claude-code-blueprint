@@ -38,3 +38,8 @@ uv run ruff format .  # format
 
 ## Validation Command
 After writing Python code, always suggest: `uv run ruff check . && uv run pytest`
+
+## TW-Specific
+- External RAM checkpoint scripts use `python3` directly (not uv), as they run from hooks
+- Never hardcode DGX paths — use env vars or hostname resolution
+- Vault access via `tw-vault.sh` helpers or macOS Keychain fallback

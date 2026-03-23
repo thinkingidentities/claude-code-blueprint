@@ -13,7 +13,7 @@ paths:
 - Formatter: `prettier`
 - Linter: `eslint`
 - Tests: `vitest` (preferred) or `jest`
-- Package manager: detect from lockfile (pnpm > bun > npm > yarn)
+- Package manager: `pnpm` v10 (ADR-001 zero-trust dependency model). Never npm/yarn/bun.
 
 ## Code Style
 - Strict mode: `strict: true` in tsconfig
@@ -35,4 +35,9 @@ paths:
 - Mock with `vi.mock()` (vitest) or `jest.mock()`
 
 ## Validation Command
-After writing TS code, always suggest: `npx tsc --noEmit && npm test`
+After writing TS code, always suggest: `pnpm tsc --noEmit && pnpm test`
+
+## TW-Specific
+- Never hardcode IPs or substrate-specific paths (use hostnames, env vars)
+- Vault access via `tw-vault.sh` or Vault MCP sidecar, never hardcoded tokens
+- Deno for MCP servers and OB1 services (not Node.js)
