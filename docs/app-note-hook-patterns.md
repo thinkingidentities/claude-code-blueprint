@@ -152,7 +152,100 @@ Without a `matcher`, hooks run on ALL tool calls. This matters for performance:
 
 **Always scope hooks to the tools they inspect.** An unscoped PreToolUse hook that shells out to an external tool adds latency to EVERY tool call.
 
+## 11. Operational Data from the Author's Article
+
+The following insights come from Delanoe Pirard's Medium article (Mar 3, 2026) and represent
+field-tested observations from daily use, not just code analysis.
+
+### Hook latency: sub-100ms in practice
+
+> "In practice, my hooks execute in under 100ms."
+
+Only `write-format.sh` is slow (calls external formatter). All security hooks (bash-guard,
+write-guard, permission-git, user-prompt-secrets) are pure regex on stdin — effectively
+instant. **TW implication:** hook latency is not a concern for our security gates. The only
+hook that might cause perceptible delay is write-format, and only if npx needs to fetch
+prettier on first use.
+
+### Skill loading: 2-4 active simultaneously
+
+> "In practice, 2 to 4 skills are loaded simultaneously, rarely more."
+
+Despite 32 skills existing, lazy loading keeps context lean. The `description` field in
+skill frontmatter is the trigger — Claude matches it against conversation context.
+**TW implication:** we can add many skills without context bloat, as long as descriptions
+are precise and don't overlap.
+
+### Agent verbosity: less is more
+
+The author started with 18 agents, trimmed to 10. Three code-focused agents (python-expert,
+typescript-expert, frontend-developer) were replaced entirely by Claude Code plugins.
+Remaining agents were trimmed **-70% in verbosity** on average.
+
+> "An agent doesn't need a novel to be effective. It needs a precise description
+> and the right tools."
+
+**TW implication:** our cognate agent stubs should stay lean. The identity and capability
+come from AGENTS.md + Cognate Registry, not from verbose agent .md files. This validates
+our SEED approach — keep agent files minimal, let the governance layer carry the weight.
+
+### Debugging hooks: stderr is your friend
+
+> "Hooks write to stderr for debugging (invisible to Claude but visible in logs).
+> I add `echo "DEBUG: ..." >&2` during development."
+
+stderr output from hooks is invisible to Claude's context but visible in the terminal
+and log files. This is the correct debugging channel — it doesn't consume tokens or
+pollute the conversation.
+
+### Known fragility: jq + JSON format dependency
+
+> "Hooks depend on jq, grep, and a stable JSON format from Claude Code. An update
+> to the input format could break the system. I don't have automated tests for
+> the hooks themselves."
+
+The author has NO automated tests for hooks. This is an acknowledged gap. If Anthropic
+changes the JSON schema for hook stdin, every hook breaks simultaneously. The fail-closed
+trap catches this (denies rather than allows), but it means a Claude Code update could
+block ALL operations until hooks are fixed.
+
+**TW mitigation:** the TWC-1920 switcher. If hooks break after a Claude Code update,
+revert to `legacy-tw` profile (which has only External RAM hooks, battle-tested).
+This is exactly the rollback path Gabe called for.
+
+### Regex is not security — it's a heuristic
+
+> "A base64-encoded or multi-line secret would pass through. This is not a
+> substitute for a secrets manager."
+
+The author explicitly acknowledges write-guard's limits. Regex catches the most common
+accidental leaks but not determined obfuscation. **TW implication:** this reinforces
+our Vault-first architecture. write-guard is a safety net, not a vault. Vault is the
+vault. The hook catches accidents; Vault prevents them.
+
+### HTTP hooks: future observability channel
+
+> "HTTP hooks open interesting possibilities: send every tool failure to a Slack
+> webhook, push security metrics to a dashboard, or delegate allow/deny decisions
+> to a centralized service."
+
+Claude Code hooks support `"type": "http"` — POST JSON to a URL, receive JSON back.
+**TW opportunity:** we could route PostToolUseFailure events to a Matrix room via
+the CC bridge, giving the federation real-time observability on tool failures across
+all cognate sessions. Not urgent, but architecturally interesting for Phase 3+.
+
+### Agent Teams = TW's cognate federation
+
+> "Instead of a single Claude Code instance orchestrating silent sub-agents,
+> multiple instances collaborate in parallel with direct communication between
+> teammates."
+
+The author sees `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` as the evolution from
+single-core to multi-core OS. This maps directly to TW's cognate federation model.
+The difference: TW already has governance (AGENTS.md, cognate identity, MCR) where
+the blueprint author is just discovering the coordination problem. TW is ahead here.
+
 ---
 
-*Extracted by Code 🔧 from Aedelon/claude-code-blueprint source code, 2026-03-23.*
+*Extracted by Code 🔧 from Aedelon/claude-code-blueprint source code + author's Medium article, 2026-03-23.*
 *For TW federation cognates operating on or extending the blueprint wiring.*
