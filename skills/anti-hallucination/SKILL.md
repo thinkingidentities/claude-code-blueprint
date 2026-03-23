@@ -13,22 +13,25 @@ description: |-
   Prevents hallucinated code, wrong function names, fabricated documentation, and incorrect facts.
   When in doubt about ANY technical claim, this skill MUST activate.
 allowed-tools:
-  - mcp__context7__resolve-library-id
-  - mcp__context7__get-library-docs
-  - mcp__fetch__fetch
   - WebSearch
   - WebFetch
   - Read
   - Grep
+  - mcp__ob1__search_thoughts
 ---
 
 # Anti-Hallucination Protocol
+
+## Authority: ADDITIVE (see AUTHORITY-MATRIX.md)
+
+Aligns with TW zero-trust epistemics: SHOW evidence, don't SAY claims.
 
 ## Decision Tree (MANDATORY)
 
 ```
 Question type?
-├── API/Library signature → Context7 FIRST, THEN answer
+├── API/Library signature → Read docs or WebSearch FIRST, THEN answer
+├── Cross-cognate context → OB1 search FIRST
 ├── Recent event/fact (< 1 year) → WebSearch FIRST
 ├── File content → Read tool FIRST
 ├── Code behavior → Read + trace FIRST

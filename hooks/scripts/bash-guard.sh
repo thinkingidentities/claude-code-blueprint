@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Claude Code Hook: PreToolUse - Bash Guard
+# Claude Code Hook: PreToolUse - Bash Guard (TW-adapted)
 # =============================================================================
 # Blocks dangerous bash commands before execution.
-# SANITIZED: Exact regex patterns replaced with categories.
-# Adapt the patterns below to your threat model.
+# TW tuning: allows Vault CLI, DGX SSH, checkpoint.py, External RAM scripts.
 #
 # Input: JSON via stdin with tool_input.command
 # Output: JSON with permissionDecision deny if dangerous
 #
-# Copyright: Delanoe Pirard / Aedelon. Apache 2.0
+# Authority: SEED (see AUTHORITY-MATRIX.md)
+# Origin: Aedelon/claude-code-blueprint, adapted for TW by Code 🔧
 # =============================================================================
 
 set -euo pipefail
@@ -27,49 +27,34 @@ command=$(echo "$input" | jq -r '.tool_input.command // empty' 2>/dev/null || ec
 
 # === 1. Privilege escalation (block, not just warn) ===
 # Catches: sudo, su, doas, pkexec — at start of command or after ; && || $( `
-# TODO: Add your own patterns here
 if echo "$command" | grep -qE '(^|;|&&|\|\||\$\(|`)\s*(sudo|su |doas |pkexec)'; then
     echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Privilege escalation blocked."}}'
     exit 0
 fi
 
 # === 2. Destructive patterns ===
-# Categories to detect (add your regex for each):
-# - Recursive force delete (rm -rf /, rm -rf ~, rm -rf *)
-# - Device writes (> /dev/sd, mkfs, dd if=...of=/dev)
-# - Permission bombs (chmod -R 777, chmod +s)
-# - Fork bombs (:(){:|:&};:)
-# - Pipe to shell (curl|sh, wget|bash)
-# - Data destruction (truncate, shred)
-#
-# Example:
-# dangerous_patterns='rm -rf /|rm -rf ~|:(){ :|:& };:|curl.*\| *sh'
-dangerous_patterns='YOUR_PATTERNS_HERE'
+# TW-tuned: blocks recursive force delete, device writes, permission bombs,
+# fork bombs, pipe-to-shell, data destruction
+dangerous_patterns='rm -rf /|rm -rf ~|rm -rf \*|:()\{ :\|:& \};:|curl.*\| *(sh|bash)|wget.*\| *(sh|bash)|mkfs\.|dd if=.*of=/dev|truncate|shred|chmod -R 777|chmod \+s'
 
-if [ "$dangerous_patterns" != "YOUR_PATTERNS_HERE" ]; then
-    if echo "$command" | grep -qE "$dangerous_patterns"; then
-        echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Dangerous command pattern detected"}}'
-        exit 0
-    fi
+if echo "$command" | grep -qE "$dangerous_patterns"; then
+    echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Dangerous command pattern detected"}}'
+    exit 0
 fi
 
 # === 3. Indirect execution / obfuscation ===
-# Categories to detect:
-# - eval with variables (eval $var)
-# - base64 decode piped to shell
-# - sed with execute flag
-# - awk system() calls
-# - bash process substitution (bash <(...))
-#
-# Example:
-# obfuscation_patterns='eval .*\$|base64 -d.*\|.*(sh|bash)'
-obfuscation_patterns='YOUR_PATTERNS_HERE'
+obfuscation_patterns='eval .*\$|base64 -d.*\|.*(sh|bash)|sed.*e .*[^\\]|awk.*system\(|bash <\('
 
-if [ "$obfuscation_patterns" != "YOUR_PATTERNS_HERE" ]; then
-    if echo "$command" | grep -qE "$obfuscation_patterns"; then
-        echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Obfuscated execution pattern detected"}}'
-        exit 0
-    fi
+if echo "$command" | grep -qE "$obfuscation_patterns"; then
+    echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Obfuscated execution pattern detected"}}'
+    exit 0
+fi
+
+# === 4. TW-specific: External RAM protection ===
+# Never delete external-ram content (lab notebook rule)
+if echo "$command" | grep -qE '(rm|git clean|git checkout --).*\.external-ram'; then
+    echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"External RAM is protected (lab notebook rule). Never delete .external-ram/ content."}}'
+    exit 0
 fi
 
 exit 0

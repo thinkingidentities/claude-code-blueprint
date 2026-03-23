@@ -27,23 +27,17 @@
       "Bash(jq:*)",
       "Bash(gh:*)",
 
-      "Bash(uv:*)",
-      "Bash(npm run:*)",
-      "Bash(npm test:*)",
-      "Bash(npm install:*)",
       "Bash(pnpm:*)",
-      "Bash(yarn:*)",
       "Bash(npx:*)",
-      "Bash(cargo:*)",
 
+      "Bash(uv:*)",
       "Bash(ruff:*)",
       "Bash(mypy:*)",
       "Bash(pytest:*)",
-      "Bash(python:*)",
+      "Bash(python3:*)",
 
-      "mcp__context7__*",
-      "mcp__fetch__*",
-      "mcp__git__*"
+      "Bash(cargo:*)",
+      "Bash(deno:*)"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -78,6 +72,7 @@
       "Write(.env.production)",
       "Write(*credentials*)",
       "Write(*secret*)",
+      "Write(*homeserver.yaml*)",
 
       "Edit(~/.ssh/*)",
       "Edit(*.pem)",
@@ -85,7 +80,8 @@
       "Edit(*id_ed25519*)",
       "Edit(.env.production)",
       "Edit(*credentials*)",
-      "Edit(*secret*)"
+      "Edit(*secret*)",
+      "Edit(*homeserver.yaml*)"
     ]
   },
   "hooks": {
@@ -94,7 +90,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/session-start.sh",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/external-ram-hydrate.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/session-start.sh",
             "timeout": 5
           }
         ]
@@ -105,7 +106,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/session-end.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/session-end.sh",
             "timeout": 3
           }
         ]
@@ -116,7 +117,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/user-prompt-secrets.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/user-prompt-secrets.sh",
             "timeout": 2
           }
         ]
@@ -128,7 +129,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/write-guard.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/write-guard.sh",
             "timeout": 3
           }
         ]
@@ -138,7 +139,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/bash-guard.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/bash-guard.sh",
             "timeout": 3
           }
         ]
@@ -150,7 +151,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/write-format.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/write-format.sh",
             "timeout": 15
           }
         ]
@@ -160,7 +161,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/bash-vuln.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/bash-vuln.sh",
             "timeout": 3
           }
         ]
@@ -171,7 +172,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/posttooluse-failure.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/posttooluse-failure.sh",
             "timeout": 3
           }
         ]
@@ -183,19 +184,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/permission-git.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/permission-git.sh",
             "timeout": 2
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/stop.sh",
-            "timeout": 5
           }
         ]
       }
@@ -205,7 +195,23 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/scripts/pre-compact.sh",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/external-ram-compact-warn.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/pre-compact.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scripts/stop.sh",
             "timeout": 5
           }
         ]
